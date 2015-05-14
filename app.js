@@ -2,6 +2,8 @@ var http   = require('http');
 var Router = require('node-simple-router');
 var config = require('./config');
 
+console.log('hello');
+
 http.globalAgent.maxSockets = 30;
 
 if (!config){
