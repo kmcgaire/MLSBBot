@@ -2,7 +2,6 @@ var http   = require('http');
 var Router = require('node-simple-router');
 var config = require('./config');
 
-console.log('hello');
 
 http.globalAgent.maxSockets = 30;
 
@@ -14,7 +13,7 @@ if (!config){
 
 var router = Router();
 
-//require('./model/db')(config);
+var db = require('./model/db')(config);
 
 var app = http.createServer(function (req, res) {
 	var chunks = [];
@@ -28,7 +27,7 @@ var app = http.createServer(function (req, res) {
 });
 
 
-require('./api/message')(router);
+require('./api/message')(router, db);
 
 app.listen(process.env.PORT || 8888, function(){
 	console.log('Listening on ' + (process.env.PORT || 8888));

@@ -6,7 +6,8 @@
   "dependencies": {
     "request": "2.55.0",
     "node-simple-router": "0.9.4-2",
-    "mongoose": "4.0.3"
+    "mongoose": "4.0.3",
+    "mysql": "^2.6.2"
   },
   "devDependencies": {},
   "scripts": {

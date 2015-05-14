@@ -7,7 +7,7 @@ var isAuthenticatedService  = Auth.isAuthenticatedService;
 var isCoreApiSignatureValid = Auth.isCoreApiSignatureValid;
 
 
-module.exports = function (router){
+module.exports = function (router, db){
 
 
 	var WHITELIST = [
@@ -19,6 +19,10 @@ module.exports = function (router){
 		console.log(req.headers);
 		return;
 	});
+
+	/*
+	db.query('SELECT .... ', function(err,rows))
+	*/
 	// 	if (isCoreApiSignatureValid(req.rawBody, req.headers['x-kik-signature'])) {
 	// 		var messages = body.messages;
 	// 		if (!(messages && Array.isArray(messages) && messages.length !== 0)) {
