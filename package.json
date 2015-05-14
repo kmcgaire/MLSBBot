@@ -4,9 +4,9 @@
   "description": "Kik Bot to notify MLSB users of updates",
   "main": "app.js",
   "dependencies": {
-    "request": "^2.55.0",
-    "node-simple-router": "^0.9.4-2",
-    "mongoose": "^4.0.3"
+    "request": "2.55.0",
+    "node-simple-router": "0.9.4-2",
+    "mongoose": "4.0.3"
   },
   "devDependencies": {},
   "scripts": {
