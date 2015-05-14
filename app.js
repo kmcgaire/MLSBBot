@@ -9,6 +9,7 @@ if (!config){
 	process.exit();
 }
 
+
 var router = Router();
 
 require('./model/db')(config);
