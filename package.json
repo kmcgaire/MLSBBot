@@ -1,0 +1,23 @@
+{
+  "name": "MLSBBot",
+  "version": "0.0.0",
+  "description": "Kik Bot to notify MLSB users of updates",
+  "main": "app.js",
+  "dependencies": {
+    "express": "~4.12.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:kmcgaire/MLSBBot.git"
+  },
+  "author": "Kevin McGaire and Pablo Lleras",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kmcgaire/MLSBBot/issues"
+  },
+  "homepage": "https://github.com/kmcgaire/MLSBBot"
+}
