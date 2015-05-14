@@ -24,8 +24,8 @@ var app = http.createServer(function (req, res) {
 	return router.apply(this, arguments);
 });
 
-require('./api/health')(app);
-require('./api/message')(app);
+
+require('./api/message')(router);
 
 app.listen(process.env.PORT || 8888, function(){
 	console.log('Listening on ' + (process.env.PORT || 8888));
