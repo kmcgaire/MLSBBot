@@ -14,7 +14,7 @@ if (!config){
 
 var router = Router();
 
-require('./model/db')(config);
+//require('./model/db')(config);
 
 var app = http.createServer(function (req, res) {
 	var chunks = [];
