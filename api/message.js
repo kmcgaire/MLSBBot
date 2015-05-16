@@ -65,6 +65,7 @@ module.exports = function (router, db){
 		}
 		var team = message.substring(index);
 		db.removeSubscription(team, username, function (data){
+			team = team.toProperCase();
 			if (!data){
 				sendMessage(username, format("You werent subscribed to %s. Ensure you are subscribed and you typed in the name correctly", team));
 			} else {
@@ -82,6 +83,7 @@ module.exports = function (router, db){
 		}
 		var team = message.substring(index);
 		db.addSubscription(team, username, function (data){
+			team = team.toProperCase();
 			if (data.err){
 				sendMessage(username, format("Couldn't add subscription for %s ensure you typed name in correctly", team));
 			} else if (data.dup){
