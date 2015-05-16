@@ -36,8 +36,8 @@ module.exports = function(config){
 			console.log(JSON.stringify(e).indexOf("ER_DUP_ENTRY"));
 			if (JSON.stringify(e).indexOf("ER_DUP_ENTRY") !== -1){
 				err = true;
+				console.log(e);
 			}
-			console.log(e);
 		}).on('result', function (row){
 			results.push(row);
 		}).on('end', function (){

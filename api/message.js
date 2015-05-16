@@ -14,11 +14,13 @@ var isCoreApiSignatureValid = Auth.isCoreApiSignatureValid;
 module.exports = function (router, db){
 
 	router.post('/message', function (req, res){
-		//TODO authenticate
+		if (!isCoreApiSignatureValid(req.rawBody, req.headers['x-kik-signature'])){
+			respond(res, 400);
+		}
 		respond(res, 200);
 		var data = req.body;
 		var message = data.body;
-		isCoreApiSignatureValid(req.rawBody, req.headers['x-kik-signature']);
+
 		if (data.type !== 'text'){
 			sendMessage(username, 'I only know how to handle text :(');
 			return;
