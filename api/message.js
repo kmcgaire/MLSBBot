@@ -40,11 +40,11 @@ module.exports = function (router, db){
 	function showSubscriptions(username){
 		var username = data.from;
 		db.getSubscriptions(username, function (data){
+			console.log(JSON.stringify(data));
 			if (data.err || data.results.length === 0){
 				sendMessage(username, "You aren't subscribed to any teams :(");
 			} else {
 				var teams = [];
-				console.log(JSON.stringify(data.results));
 				// for (var i = 0; i < data.results.length; i++){
 				// 	teams.push(data.results.team.toProperCase());
 				// }
