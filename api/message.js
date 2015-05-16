@@ -35,8 +35,23 @@ module.exports = function (router, db){
 		return;
 	});
 
-	function showSubscriptions(username){
+	String.prototype.toProperCase = function () {
+	    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+	};
 
+	function showSubscriptions(username){
+		var username = data.from;
+		db.getSubscriptions(username, function (result){
+			if (!result || result.length === 0){
+				sendMessage(data.from, "You aren't subscribed to any teams :(");
+			} else {
+				var teams = [];
+				for (var i = 0; i < result.length; i++){
+					teams.push(result.team.toProperCase());
+				}
+				sendMessage(data.from, format("You are subscribed to: %s", teams.join(", ")));
+			}
+		})
 	}
 
 	function handleUnsubscribe(data){
