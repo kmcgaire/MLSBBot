@@ -40,7 +40,7 @@ module.exports = function(config){
 	}
 
 	function getSubscriptionsForDate(team, date, callback){
-		team.replace(/\'/g,"");
+		team = team.replace(/\'/g,"");
 		date.setHours(0,0,0,0);
 		var	queryString = format("SELECT * FROM Games inner join Subscriptions on Subscriptions.team=Games.HomeTeam or Subscriptions.team=Games.awayTeam WHERE Subscriptions.team=%s and date=%s",
 							 mysql.escape(team), mysql.escape(date));
@@ -55,7 +55,7 @@ module.exports = function(config){
 	}
 
 	function removeSubscription(team, username, callback){
-		team.replace(/\'/g,"");
+		team = team.replace(/\'/g,"");
 		var queryString = format("DELETE FROM Subscriptions WHERE Subscriptions.Team=%s and Subscriptions.username=%s",
 								mysql.escape(team), mysql.escape(username));
 
@@ -63,7 +63,7 @@ module.exports = function(config){
 	}
 
 	function addSubscription(team, username, callback) {
-		team.replace(/\'/g,"");
+		team = team.replace(/\'/g,"");
 		var queryString = format("INSERT INTO Subscriptions (`Team`, `Username`) Values(%s ,%s)",
 								mysql.escape(team), mysql.escape(username));
 
@@ -72,8 +72,8 @@ module.exports = function(config){
 
 
 	function addGame(homeTeam, awayTeam, date, time, field, callback){
-		homeTeam.replace(/\'/g,"");
-		awayTeam.replace(/\'/g,"");
+		homeTeam = homeTeam.replace(/\'/g,"");
+		homeTeam = awayTeam.replace(/\'/g,"");
 		date.setHours(0,0,0,0);
 		if(['11:45', '12:45', '1:45'].indexOf(time) == -1){
 			console.lerror(format('Invalid time %s for adding a game', time));
@@ -102,7 +102,7 @@ module.exports = function(config){
 		}
 		var queryString;
 		if (team){
-			team.replace(/\'/g,"");
+			team = team.replace(/\'/g,"");
 			queryString = format("SELECT * FROM Games WHERE Games.HomeTeam = %s or Games.AwayTeam =%s",
 					   	    mysql.escape(team),
 					   	    mysql.escape(team));

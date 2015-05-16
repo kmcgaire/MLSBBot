@@ -23,12 +23,14 @@ module.exports = function (router, db){
 		};
 
 		if (data.team){
+			var team = decodeURIComponent(data.team);
 			db.getGames(team, handleRes);
 		} else {
 			db.getGames(handleRes);
 		}
 	});
 
+	//TODO multiple games in an array? or one by one
 	router.put('/games', function (req, res){
 		var data = req.body;
 		console.log(req);

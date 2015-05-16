@@ -15,8 +15,8 @@ module.exports = function (router, db){
 	]
 
 	router.post('/message', function (req, res){
-		var body =  JSON.parse(req.rawBody);
-		console.log(req.headers);
+		console.log(req);
+		respond(res, 200);
 		return;
 	});
 
