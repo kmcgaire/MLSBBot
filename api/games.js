@@ -16,7 +16,7 @@ module.exports = function (router, db){
 				respond(res, 200, JSON.stringify(games));
 				return;
 			} else {
-				respond(res, 400, "No games found");
+				respond(res, 200, "No games found");
 				return;
 			}
 		};

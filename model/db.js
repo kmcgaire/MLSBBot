@@ -5,7 +5,7 @@ var util  = require('util');
 
 var createTeamsTable = "CREATE TABLE Teams (Team VARCHAR(100), PRIMARY KEY(Team))";
 var createSubscriptionTable = "CREATE TABLE Subscriptions (Team VARCHAR(100),Username VARCHAR(100),PRIMARY KEY(Team, Username), FOREIGN KEY (Team) REFERENCES Teams(Team))";
-var createGamesTable = "CREATE TABLE Games (HomeTeam VARCHAR(100),AwayTeam VARCHAR(100),Date DATETIME, Time VARCHAR(100), Field VARCHAR(100), PRIMARY KEY(HomeTeam, AwayTeam, Date), FOREIGN KEY (HomeTeam) REFERENCES Teams(Team), FOREIGN KEY (AwayTeam) REFERENCES Teams(Team))";
+var createGamesTable = "CREATE TABLE Games (HomeTeam VARCHAR(100),AwayTeam VARCHAR(100),Date DOUBLE, Time VARCHAR(100), Field VARCHAR(100), PRIMARY KEY(HomeTeam, AwayTeam, Date), FOREIGN KEY (HomeTeam) REFERENCES Teams(Team), FOREIGN KEY (AwayTeam) REFERENCES Teams(Team))";
 
 var dropTeamsTable = "DROP TABLE Teams";
 var dropSubscriptionTable = "DROP TABLE Subscriptions";
@@ -19,12 +19,14 @@ module.exports = function(config){
 	handleDisconnect();
 
 	return {
-		getGames           : getGames,
-		addSubscription    : addSubscription,
-		removeSubscription : removeSubscription,
-		getSubscriptions   : getSubscriptions,
-		addGame            : addGame,
-		addTeam            : addTeam
+		getGames                    : getGames,
+		addSubscription             : addSubscription,
+		removeSubscription          : removeSubscription,
+		getSubscriptionsForUsername : getSubscriptionsForUsername,
+		getSubscriptionsForTeam     : getSubscriptionsForTeam,
+		getSubscriptionsForDate     : getSubscriptionsForDate,
+		addGame                     : addGame,
+		addTeam                     : addTeam
 	};
 
 	function executeSQL(queryString, callback){
@@ -58,15 +60,20 @@ module.exports = function(config){
 		executeSQL(queryString, callback);
 	}
 
-	function getSubscriptionsForDate(team, date, callback){
+	function getSubscriptionsForTeam(team, callback){
 		team = normalizeTeam(team);
-		date.setHours(0,0,0,0);
-		var	queryString = format("SELECT * FROM Games inner join Subscriptions on Subscriptions.team=Games.HomeTeam or Subscriptions.team=Games.awayTeam WHERE Subscriptions.team=%s and date=%s",
-							 mysql.escape(team), mysql.escape(date));
+		var	queryString = format("SELECT * FROM Subscriptions WHERE Subscriptions.team=%s",
+							 mysql.escape(team));
 		executeSQL(queryString, callback);
 	}
 
-	function getSubscriptions(username, callback){
+	function getSubscriptionsForDate(date, callback){
+		var	queryString = format("SELECT * FROM Games inner join Subscriptions on Subscriptions.team=Games.HomeTeam or Subscriptions.team=Games.awayTeam WHERE Games.date=%d",
+							mysql.escape(date.setHours(0,0,0,0)));
+		executeSQL(queryString, callback);
+	}
+
+	function getSubscriptionsForUsername(username, callback){
 		var queryString = format("SELECT * FROM Subscriptions WHERE Subscriptions.username=%s",
 								 mysql.escape(username));
 
@@ -74,7 +81,7 @@ module.exports = function(config){
 	}
 
 	function removeSubscription(team, username, callback){
-		team = normalizeTeam(team);;
+		team = normalizeTeam(team);
 		var queryString = format("DELETE FROM Subscriptions WHERE Subscriptions.Team=%s and Subscriptions.username=%s",
 								mysql.escape(team), mysql.escape(username));
 
@@ -92,8 +99,7 @@ module.exports = function(config){
 
 	function addGame(homeTeam, awayTeam, date, time, field, callback){
 		homeTeam = normalizeTeam(homeTeam)
-		homeTeam = normalizeTeam(awayTeam);
-		date.setHours(0,0,0,0);
+		awayTeam = normalizeTeam(awayTeam);
 		if(['11:45', '12:45', '1:45'].indexOf(time) == -1){
 			console.lerror(format('Invalid time %s for adding a game', time));
 			callback && callback();
@@ -105,10 +111,9 @@ module.exports = function(config){
 			callback && callback();
 			return;
 		}
-		var queryString = format("INSERT INTO Games \
-							(`HomeTeam`, `AwayTeam`, `Date`, `Time`, `Field`) Values(%s,%s,%s,%s,%s)",
-							mysql.escape('kik'), mysql.escape('sportszone'),
-							mysql.escape(new Date().setHours(0,0,0,0)),
+		var queryString = format("INSERT INTO Games (`HomeTeam`, `AwayTeam`, `Date`, `Time`, `Field`) Values(%s,%s,%d,%s,%s)",
+							mysql.escape(homeTeam), mysql.escape(awayTeam),
+							mysql.escape(date.setHours(0,0,0,0)),
 							mysql.escape(time), mysql.escape(field));
 
 		executeSQL(queryString, callback);

@@ -33,13 +33,9 @@ module.exports = function (router, db){
 		return;
 	});
 
-	String.prototype.toProperCase = function () {
-	    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-	};
-
 	function showSubscriptions(data){
 		var username = data.from;
-		db.getSubscriptions(username, function (data){
+		db.getSubscriptionsForUsername(username, function (data){
 			console.log(JSON.stringify(data));
 			if (data.err || !data.results || data.results.length === 0){
 				sendMessage(username, "You aren't subscribed to any teams :(");

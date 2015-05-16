@@ -10,6 +10,10 @@ if (!config){
 	process.exit();
 }
 
+String.prototype.toProperCase = function () {
+    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
+
 
 var router = Router();
 
@@ -30,6 +34,7 @@ var app = http.createServer(function (req, res) {
 require('./api/message')(router, db);
 require('./api/subscriptions')(router, db);
 require('./api/games')(router, db);
+require('./api/notifications')(router,db);
 
 app.listen(process.env.PORT || 8888, function(){
 	console.log('Listening on ' + (process.env.PORT || 8888));
