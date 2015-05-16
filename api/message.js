@@ -1,34 +1,71 @@
+var format       = require('util').format
+
 var Auth         = require('../lib/auth');
-var config       = require('../config');
 var utils        = require('../lib/utils');
+var Auth         = require('../lib/auth');
+
 var respond      = utils.respond;
 var sendMessage  = utils.sendMessage;
 
 
-var isAuthenticatedService  = Auth.isAuthenticatedService;
 var isCoreApiSignatureValid = Auth.isCoreApiSignatureValid;
 
 
 module.exports = function (router, db){
 
-
-	var WHITELIST = [
-		'kmcgaire',
-	]
-
 	router.post('/message', function (req, res){
 		//TODO authenticate
 		respond(res, 200);
 		var data = req.body;
-		sendMessage(data.from, 'You hit the backend:)', function(status){
-			console.log("Sent message to " + data.from + " responded with status " + status);
-		})
+		var message = data.body;
+		isCoreApiSignatureValid(req.rawBody, req.headers['x-kik-signature']);
+		if (data.type !== 'text'){
+			sendMessage(username, 'I only know how to handle text :(');
+			return;
+		}
+		if (data.body.substring(0,9).toLowerCase() === 'subscribe'){
+			handleSubscribe(data);
+		}
+		if (data.body.substring(0,11).toLowerCase() === 'unsubscribe'){
+			handleUnsubscribe(data);
+		}
 		return;
 	});
 
-	/*
-	db.query('SELECT .... ', function(err,rows))
-	*/
+	function handleUnsubscribe(data){
+		var username = data.from;
+		var message = data.body;
+		var index = 10;
+		if (message.indexOf(":") !== -1){
+			index++;
+		}
+		var team = message.substring(index);
+		db.removeSubscription(team, username, function (success){
+			if (!success){
+				sendMessage(data.from, format("You werent subscribed to %s. Ensure you are subscribed and you typed in the name correctly", team));
+			} else {
+				sendMessage(data.from, format("Successfully unsubscribed you to %s :(", team));
+			}
+		})
+	}
+
+	function handleSubscribe(data){
+		var username = data.from;
+		var message = data.body;
+		var index = 10;
+		if (message.indexOf(":") !== -1){
+			index++;
+		}
+		var team = message.substring(index);
+		db.addSubscription(team, username, function (success){
+			if (!success){
+				sendMessage(data.from, format("Couldn't add subscription for %s ensure you typed name in correctly", team));
+			} else {
+				sendMessage(data.from, format("Successfully subscribed you to %s, I will update you at 10am any day you play baseball!", team));
+			}
+		})
+	}
+
 	// 	if (isCoreApiSignatureValid(req.rawBody, req.headers['x-kik-signature'])) {
 	// 		var messages = body.messages;
 	// 		if (!(messages && Array.isArray(messages) && messages.length !== 0)) {

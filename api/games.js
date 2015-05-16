@@ -1,7 +1,6 @@
 var util         = require('util');
 
 var Auth         = require('../lib/auth');
-var config       = require('../config');
 var respond      = require('../lib/utils').respond;
 
 

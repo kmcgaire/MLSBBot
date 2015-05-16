@@ -2,9 +2,14 @@ var mysql = require('mysql');
 var util  = require('util');
 
 
-var createSubscriptionTable = "CREATE TABLE Subscriptions (Team VARCHAR(100),Username VARCHAR(100),PRIMARY KEY(Team, Username))";
-var createGamesTable = "CREATE TABLE Games (HomeTeam VARCHAR(100),AwayTeam VARCHAR(100),Date DATETIME, Time VARCHAR(100), Field VARCHAR(100), PRIMARY KEY(HomeTeam, AwayTeam, Date))";
 
+var createTeamsTable = "CREATE TABLE Teams (Team VARCHAR(100), PRIMARY KEY(Team))";
+var createSubscriptionTable = "CREATE TABLE Subscriptions (Team VARCHAR(100),Username VARCHAR(100),PRIMARY KEY(Team, Username), FOREIGN KEY (Team) REFERENCES Teams(Team))";
+var createGamesTable = "CREATE TABLE Games (HomeTeam VARCHAR(100),AwayTeam VARCHAR(100),Date DATETIME, Time VARCHAR(100), Field VARCHAR(100), PRIMARY KEY(HomeTeam, AwayTeam, Date), FOREIGN KEY (HomeTeam) REFERENCES Teams(Team), FOREIGN KEY (AwayTeam) REFERENCES Teams(Team))";
+
+var dropTeamsTable = "DROP TABLE Teams";
+var dropSubscriptionTable = "DROP TABLE Subscriptions";
+var dropGamesTable = "DROP TABLE Games";
 
 module.exports = function(config){
 
@@ -19,14 +24,15 @@ module.exports = function(config){
 		removeSubscription : removeSubscription,
 		getSubscriptions   : getSubscriptions,
 		addGame            : addGame,
+		addTeam            : addTeam
 	};
 
 	function executeSQL(queryString, callback){
 		var results = [];
 		var err = false;
 		console.log("EXECUTING SQL: " + queryString);
-		connection.query(queryString).on('error', function(err){
-			console.log(err);
+		connection.query(queryString).on('error', function(e){
+			console.log(e);
 			err = true;
 		}).on('result', function (row){
 			results.push(row);
@@ -37,10 +43,20 @@ module.exports = function(config){
 				callback && callback(results);
 			}
 		});
+	};
+
+	function normalizeTeam(team){
+		return team.replace(/\'/g,"").toLowerCase().trim();
+	}
+
+	function addTeam(team, callback){
+		team = normalizeTeam(team);
+		var queryString = format("INSERT INTO Teams (`Team`) Values(%s)", mysql.escape(team));
+		executeSQL(queryString, callback);
 	}
 
 	function getSubscriptionsForDate(team, date, callback){
-		team = team.replace(/\'/g,"");
+		team = normalizeTeam(team);
 		date.setHours(0,0,0,0);
 		var	queryString = format("SELECT * FROM Games inner join Subscriptions on Subscriptions.team=Games.HomeTeam or Subscriptions.team=Games.awayTeam WHERE Subscriptions.team=%s and date=%s",
 							 mysql.escape(team), mysql.escape(date));
@@ -55,7 +71,7 @@ module.exports = function(config){
 	}
 
 	function removeSubscription(team, username, callback){
-		team = team.replace(/\'/g,"");
+		team = normalizeTeam(team);;
 		var queryString = format("DELETE FROM Subscriptions WHERE Subscriptions.Team=%s and Subscriptions.username=%s",
 								mysql.escape(team), mysql.escape(username));
 
@@ -63,7 +79,7 @@ module.exports = function(config){
 	}
 
 	function addSubscription(team, username, callback) {
-		team = team.replace(/\'/g,"");
+		team = normalizeTeam(team);;
 		var queryString = format("INSERT INTO Subscriptions (`Team`, `Username`) Values(%s ,%s)",
 								mysql.escape(team), mysql.escape(username));
 
@@ -72,8 +88,8 @@ module.exports = function(config){
 
 
 	function addGame(homeTeam, awayTeam, date, time, field, callback){
-		homeTeam = homeTeam.replace(/\'/g,"");
-		homeTeam = awayTeam.replace(/\'/g,"");
+		homeTeam = normalizeTeam(homeTeam)
+		homeTeam = normalizeTeam(awayTeam);
 		date.setHours(0,0,0,0);
 		if(['11:45', '12:45', '1:45'].indexOf(time) == -1){
 			console.lerror(format('Invalid time %s for adding a game', time));
@@ -102,7 +118,7 @@ module.exports = function(config){
 		}
 		var queryString;
 		if (team){
-			team = team.replace(/\'/g,"");
+			team = normalizeTeam(team);;
 			queryString = format("SELECT * FROM Games WHERE Games.HomeTeam = %s or Games.AwayTeam =%s",
 					   	    mysql.escape(team),
 					   	    mysql.escape(team));
