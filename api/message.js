@@ -44,9 +44,10 @@ module.exports = function (router, db){
 				sendMessage(username, "You aren't subscribed to any teams :(");
 			} else {
 				var teams = [];
-				for (var i = 0; i < data.results.length; i++){
-					teams.push(data.results.team.toProperCase());
-				}
+				console.log(JSON.stringify(data.results));
+				// for (var i = 0; i < data.results.length; i++){
+				// 	teams.push(data.results.team.toProperCase());
+				// }
 				sendMessage(username, format("You are subscribed to: %s", teams.join(", ")));
 			}
 		})
