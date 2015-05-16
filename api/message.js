@@ -46,7 +46,7 @@ module.exports = function (router, db){
 			} else {
 				var teams = [];
 				for (var i = 0; i < data.results.length; i++){
-					teams.push(data.results.Team.toProperCase());
+					teams.push(data.results[i].Team.toProperCase());
 				}
 				sendMessage(username, format("You are subscribed to: %s", teams.join(", ")));
 			}
