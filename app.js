@@ -28,6 +28,8 @@ var app = http.createServer(function (req, res) {
 
 
 require('./api/message')(router, db);
+require('./api/subscriptions')(router, db);
+require('./api/games')(router, db);
 
 app.listen(process.env.PORT || 8888, function(){
 	console.log('Listening on ' + (process.env.PORT || 8888));
