@@ -23,6 +23,9 @@ module.exports = function (router, db){
 			sendMessage(username, 'I only know how to handle text :(');
 			return;
 		}
+		if (data.body.substring(0,13).toLowerCase() === 'subscriptions'){
+			showSubscriptions(username);
+		}
 		if (data.body.substring(0,9).toLowerCase() === 'subscribe'){
 			handleSubscribe(data);
 		}
@@ -32,10 +35,14 @@ module.exports = function (router, db){
 		return;
 	});
 
+	function showSubscriptions(username){
+
+	}
+
 	function handleUnsubscribe(data){
 		var username = data.from;
 		var message = data.body;
-		var index = 10;
+		var index = 14;
 		if (message.indexOf(":") !== -1){
 			index++;
 		}
