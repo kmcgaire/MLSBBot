@@ -28,22 +28,23 @@ module.exports = function(config){
 	};
 
 	function executeSQL(queryString, callback){
-		var results = [];
-		var err = false;
+		var data = {
+			err: false,
+			dup: false,
+			results: []
+		};
 		console.log("EXECUTING SQL: " + queryString);
 		connection.query(queryString).on('error', function(e){
 			if (e.code !== "ER_DUP_ENTRY"){
 				console.log(e);
-				err = true;
+				data.err = true;
+			} else {
+				data.dup = true;
 			}
 		}).on('result', function (row){
-			results.push(row);
+			data.results.push(row);
 		}).on('end', function (){
-			if (err){
-				callback && callback(false);
-			} else {
-				callback && callback(results);
-			}
+			callback && callback(data);
 		});
 	};
 

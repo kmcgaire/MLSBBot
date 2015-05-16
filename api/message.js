@@ -43,13 +43,13 @@ module.exports = function (router, db){
 
 	function showSubscriptions(username){
 		var username = data.from;
-		db.getSubscriptions(username, function (result){
-			if (!result || result.length === 0){
+		db.getSubscriptions(username, function (data){
+			if (data.err || data.results.length === 0){
 				sendMessage(data.from, "You aren't subscribed to any teams :(");
 			} else {
 				var teams = [];
-				for (var i = 0; i < result.length; i++){
-					teams.push(result.team.toProperCase());
+				for (var i = 0; i < data.results.length; i++){
+					teams.push(data.results.team.toProperCase());
 				}
 				sendMessage(data.from, format("You are subscribed to: %s", teams.join(", ")));
 			}
@@ -64,8 +64,8 @@ module.exports = function (router, db){
 			index++;
 		}
 		var team = message.substring(index);
-		db.removeSubscription(team, username, function (success){
-			if (!success){
+		db.removeSubscription(team, username, function (data){
+			if (!data){
 				sendMessage(data.from, format("You werent subscribed to %s. Ensure you are subscribed and you typed in the name correctly", team));
 			} else {
 				sendMessage(data.from, format("Successfully unsubscribed you to %s :(", team));
@@ -81,9 +81,11 @@ module.exports = function (router, db){
 			index++;
 		}
 		var team = message.substring(index);
-		db.addSubscription(team, username, function (success){
-			if (!success){
+		db.addSubscription(team, username, function (data){
+			if (data.err){
 				sendMessage(data.from, format("Couldn't add subscription for %s ensure you typed name in correctly", team));
+			} else if (data.dup){
+				sendMessage(data.from, format("Already subscribed to %s", team));
 			} else {
 				sendMessage(data.from, format("Successfully subscribed you to %s, I will update you at 10am any day you play baseball!", team));
 			}
