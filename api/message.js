@@ -20,7 +20,7 @@ module.exports = function (router, db){
 		//TODO authenticate
 		respond(res, 200);
 		var data = req.body;
-		sendMessage(data.from, 'test', function(status){
+		sendMessage(data.from, 'You hit the backend:)', function(status){
 			console.log("Sent message to " + data.from + " responded with status " + status);
 		})
 		return;
