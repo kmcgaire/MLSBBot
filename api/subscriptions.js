@@ -15,12 +15,12 @@ module.exports = function (router, db){
 			respond(res, 404, "username required");
 			return;
 		}
-		db.getSubscriptions(data.username, function (subscriptions){
-			if (subscriptions && subscriptions.length > 0){
-				respond(res, 200, JSON.stringify(subscriptions));
+		db.getSubscriptions(data.username, function (data){
+			if (data.results && data.results.length > 0){
+				respond(res, 200, JSON.stringify(data.results));
 				return;
 			} else {
-				respond(res, 400, "No subscriptions found");
+				respond(res, 200, "No subscriptions found");
 				return;
 			}
 		});
@@ -33,8 +33,8 @@ module.exports = function (router, db){
 			respond(res, 404, "username and team required");
 			return;
 		}
-		db.addSubscription(data.team, data.username, function (err){
-			if (err){
+		db.addSubscription(data.team, data.username, function (data){
+			if (data.err){
 				console.log('could not put ')
 				respond(res, 500, "");
 				return;
