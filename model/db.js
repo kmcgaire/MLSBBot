@@ -32,6 +32,8 @@ module.exports = function(config){
 		var err = false;
 		console.log("EXECUTING SQL: " + queryString);
 		connection.query(queryString).on('error', function(e){
+			console.log(JSON.stringify(e));
+			console.log(JSON.stringify(e).indexOf("ER_DUP_ENTRY"));
 			if (JSON.stringify(e).indexOf("ER_DUP_ENTRY") !== -1){
 				err = true;
 			}
