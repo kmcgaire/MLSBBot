@@ -57,7 +57,7 @@ module.exports = function (router, db){
 	function handleUnsubscribe(data){
 		var username = data.from;
 		var message = data.body;
-		var index = 14;
+		var index = 12;
 		if (message.indexOf(":") !== -1){
 			index++;
 		}
