@@ -1,6 +1,8 @@
 var Auth         = require('../lib/auth');
 var config       = require('../config');
-var respond      = require('../lib/utils').respond;
+var utils        = require('../lib/utils');
+var respond      = utils.respond;
+var sendMessage  = utils.sendMessage;
 
 
 var isAuthenticatedService  = Auth.isAuthenticatedService;
@@ -15,8 +17,12 @@ module.exports = function (router, db){
 	]
 
 	router.post('/message', function (req, res){
-		console.log(req);
+		//TODO authenticate
 		respond(res, 200);
+		var data = req.body;
+		sendMessage(data.from, 'test', function(status){
+			console.log("Sent message to " + data.from + " responded with status " + status);
+		})
 		return;
 	});
 
