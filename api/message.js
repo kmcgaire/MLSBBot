@@ -22,7 +22,7 @@ module.exports = function (router, db){
 			return;
 		}
 		if (data.body.substring(0,13).toLowerCase() === 'subscriptions'){
-			showSubscriptions(username);
+			showSubscriptions(data);
 		}
 		if (data.body.substring(0,9).toLowerCase() === 'subscribe'){
 			handleSubscribe(data);
@@ -37,7 +37,7 @@ module.exports = function (router, db){
 	    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 	};
 
-	function showSubscriptions(username){
+	function showSubscriptions(data){
 		var username = data.from;
 		db.getSubscriptions(username, function (data){
 			console.log(JSON.stringify(data));
@@ -45,9 +45,9 @@ module.exports = function (router, db){
 				sendMessage(username, "You aren't subscribed to any teams :(");
 			} else {
 				var teams = [];
-				// for (var i = 0; i < data.results.length; i++){
-				// 	teams.push(data.results.team.toProperCase());
-				// }
+				for (var i = 0; i < data.results.length; i++){
+					teams.push(data.results.team.toProperCase());
+				}
 				sendMessage(username, format("You are subscribed to: %s", teams.join(", ")));
 			}
 		})
