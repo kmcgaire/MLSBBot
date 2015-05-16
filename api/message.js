@@ -1,21 +1,17 @@
 var format       = require('util').format
-
 var Auth         = require('../lib/auth');
 var utils        = require('../lib/utils');
-var Auth         = require('../lib/auth');
 
 var respond      = utils.respond;
 var sendMessage  = utils.sendMessage;
 
 
-var isCoreApiSignatureValid = Auth.isCoreApiSignatureValid;
-
-
 module.exports = function (router, db){
 
 	router.post('/message', function (req, res){
-		if (!isCoreApiSignatureValid(req.rawBody, req.headers['x-kik-signature'])){
+		if (!Auth.isCoreApiSignatureValid(req.rawBody, req.headers['x-kik-signature'])){
 			respond(res, 400);
+			return;
 		}
 		respond(res, 200);
 		var data = req.body;
