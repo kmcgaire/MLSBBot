@@ -43,7 +43,7 @@ module.exports = function(router,
 			for (var i = 0; i < data.results.length; i++){
 				console.log(data.results[i]);
 				var game = data.results[i];
-				var message = "Good morning! You have a game today: \n\n %s vs. %s, at %s - %s \n\n Best of luck!"
+				var message = "Good morning! You have a game today:\n\n%s vs. %s, at %s - %s \n\nBest of luck!"
 				message = format(message, game.HomeTeam.toProperCase(), game.AwayTeam.toProperCase(), game.Time, game.Field);
 				sendMessage(game.Username, message);
 			}
