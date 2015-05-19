@@ -146,8 +146,8 @@ module.exports = function (router, db){
 			if (error || response.statusCode !== 200) {
 				sendMessage(username, "Weather information is down :( look out the window?");
 			} else {
-				var weather = body.weather.description;
-				var temp = Number(body.main.temp) - 273.15
+				var weather = body.weather[0].description;
+				var temp = parseInt(body.main.temp) - 273
 				console.log(format("Temp: %d\n%s",temp,weather));
 			}
 		});
