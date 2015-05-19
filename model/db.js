@@ -39,7 +39,6 @@ module.exports = function(config){
 		console.log("EXECUTING SQL: " + queryString);
 		connection.query(queryString).on('error', function(e){
 			if (e.code !== "ER_DUP_ENTRY"){
-				console.log(e);
 				data.err = true;
 			} else {
 				data.dup = true;
