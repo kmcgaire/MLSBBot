@@ -23,12 +23,12 @@ module.exports = function (router, db){
 		}
 		if (data.body.substring(0,13).toLowerCase() === 'subscriptions'){
 			showSubscriptions(data);
-		}
-		if (data.body.substring(0,9).toLowerCase() === 'subscribe'){
+		} else if (data.body.substring(0,9).toLowerCase() === 'subscribe'){
 			handleSubscribe(data);
-		}
-		if (data.body.substring(0,11).toLowerCase() === 'unsubscribe'){
+		} else if (data.body.substring(0,11).toLowerCase() === 'unsubscribe'){
 			handleUnsubscribe(data);
+		} else {
+			sendMessage(data.from, "Someone has crossed my wires... I don't understand what you are saying");
 		}
 		return;
 	});
