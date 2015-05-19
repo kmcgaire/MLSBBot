@@ -18,7 +18,7 @@ module.exports = function (router, db){
 		var data = req.body;
 		var message = data.body;
 
-		var whensMyGame = new RegExp('((when)|(where)|(who)|(what)).+ game.*', 'i');
+		var whensMyGame = new RegExp('((what)|(who)|(when)|(where)).+((game)|(play)|(field))', 'i');
 
 		if (data.type !== 'text'){
 			sendMessage(username, 'I only know how to handle text :(');
