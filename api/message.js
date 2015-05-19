@@ -1,6 +1,7 @@
 var format       = require('util').format
 var Auth         = require('../lib/auth');
 var utils        = require('../lib/utils');
+var request      = require('request');
 
 var respond      = utils.respond;
 var sendMessage  = utils.sendMessage;
@@ -34,6 +35,8 @@ module.exports = function (router, db){
 			handleUnsubscribe(data);
 		} else if (whensMyGame.test(data.body)){
 			handleWhensMyNextGame(data);
+		} else if (data.body.indexOf('fun') !== -1){
+			funMeter(data);
 		} else {
 			sendMessage(data.from, "Someone has crossed my wires... I don't understand what you are saying");
 		}
@@ -52,7 +55,7 @@ module.exports = function (router, db){
 				sendMessage(username, message);
 			}
 		});
-	}
+	};
 
 	function showSubscriptions(data){
 		var username = data.from;
@@ -67,8 +70,8 @@ module.exports = function (router, db){
 				}
 				sendMessage(username, format("You are subscribed to: %s", teams.join(", ")));
 			}
-		})
-	}
+		});
+	};
 
 	function handleUnsubscribe(data){
 		var username = data.from;
@@ -85,8 +88,8 @@ module.exports = function (router, db){
 			} else {
 				sendMessage(username, format("Successfully unsubscribed you to %s :(", team));
 			}
-		})
-	}
+		});
+	};
 
 	function handleSubscribe(data){
 		var username = data.from;
@@ -104,6 +107,26 @@ module.exports = function (router, db){
 				sendMessage(username, format("Already subscribed to %s", team));
 			} else {
 				sendMessage(username, format("Successfully subscribed you to %s, I will update you at 10am any day you play baseball!", team));
+			}
+		});
+	};
+
+	function funMeter(data){
+		var username = data.from;
+		var options = {
+			uri: 'http://mlsb.ca',
+			method: 'GET'
+		}
+		sendMessage(username, "Calculating the amount of fun we are having beep boop....")
+
+		request(options, function (error, response, body){
+			if (error || response.status !== 200) {
+				sendMessage(username, "Sorry I was unable to determine the amount of fun we are having :(");
+			} else {
+				var html = body.split('data-start-value');
+				html = html[1].split('\"');
+				var fun = html[1];
+				sendMessage(username, format("We are having %s amount of fun :)!!!", fun));
 			}
 		})
 	}
