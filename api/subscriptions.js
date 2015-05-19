@@ -30,19 +30,28 @@ module.exports = function (router, db){
 
 	router.get('/subscriptions', function (req, res){
 		var data = req.body;
-		if (!data || !data.username){
-			respond(res, 404, "username required");
-			return;
+		if (data && data.username){
+			db.getSubscriptionsForUsername(data.username, function (data){
+				if (data.results && data.results.length > 0){
+					respond(res, 200, JSON.stringify(data.results));
+					return;
+				} else {
+					respond(res, 200, "No subscriptions found");
+					return;
+				}
+			});
+		} else {
+			db.getAllSubscriptions(function (data){
+				if (data.results && data.results.length > 0){
+					respond(res, 200, JSON.stringify(data.results));
+					return;
+				} else {
+					respond(res, 200, "No subscriptions found");
+					return;
+				}
+			});
 		}
-		db.getSubscriptionsForUsername(data.username, function (data){
-			if (data.results && data.results.length > 0){
-				respond(res, 200, JSON.stringify(data.results));
-				return;
-			} else {
-				respond(res, 200, "No subscriptions found");
-				return;
-			}
-		});
+
 	});
 
 	// router.put('/subscriptions', function (req, res){

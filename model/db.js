@@ -27,7 +27,8 @@ module.exports = function(config){
 		getSubscriptionsForDate     : getSubscriptionsForDate,
 		addGame                     : addGame,
 		addTeam                     : addTeam,
-		nextGame                    : nextGame
+		nextGame                    : nextGame,
+		getAllSubscriptions         : getAllSubscriptions
 	};
 
 	function executeSQL(queryString, callback){
@@ -91,6 +92,11 @@ module.exports = function(config){
 		var queryString = format("SELECT * FROM Subscriptions WHERE Subscriptions.username=%s",
 								 mysql.escape(username));
 
+		executeSQL(queryString, callback);
+	}
+
+	function getAllSubscriptions(callback){
+		var queryString = "SELECT * FROM Subscriptions Order by Subscriptions.team";
 		executeSQL(queryString, callback);
 	}
 
