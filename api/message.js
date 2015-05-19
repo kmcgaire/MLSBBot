@@ -126,7 +126,7 @@ module.exports = function (router, db){
 				var html = body.split('data-start-value');
 				html = html[1].split('\"');
 				var fun = html[1];
-				sendMessage(username, format("We are having %s amount of fun :)!!!", fun));
+				sendMessage(username, format("Looks like the fun meter is at %s/500", fun));
 			}
 		})
 	}
