@@ -38,6 +38,8 @@ module.exports = function (router, db){
 			handleWhensMyNextGame(data);
 		} else if (data.body.indexOf('fun') !== -1 || data.body.indexOf('count') !== -1){
 			funMeter(data);
+		} else if (data.body.indexOf('weather') !== -1){
+			getWeather(data);
 		} else {
 			sendMessage(data.from, "Someone has crossed my wires... I don't understand what you are saying");
 		}
@@ -130,5 +132,24 @@ module.exports = function (router, db){
 				sendMessage(username, format("Looks like the fun meter is at %s/500", fun));
 			}
 		})
-	}
+	};
+
+	function getWeather(data){
+		var username = data.from;
+		var options = {
+			uri: 'http://api.openweathermap.org/data/2.5/weather',
+			method: 'GET',
+			qs: { q: 'Waterloo,Can' },
+			json: true
+		};
+		request(options, function (error, response, body){
+			if (error || response.statusCode !== 200) {
+				sendMessage(username, "Weather information is down :( look out the window?");
+			} else {
+				var weather = body.weather.description;
+				var temp = Number(body.main.temp) - 273.15
+				console.log(format("Temp: %d\n%s",temp,weather));
+			}
+		});
+	};
 }
