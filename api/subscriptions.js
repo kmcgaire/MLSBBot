@@ -43,7 +43,9 @@ module.exports = function (router, db){
 		} else {
 			db.getAllSubscriptions(function (data){
 				if (data.results && data.results.length > 0){
-					respond(res, 200, JSON.stringify(data.results));
+					var subs = JSON.stringify(data.results);
+					subs = subs.replace(/},/g,"},\n")
+					respond(res, 200, subs);
 					return;
 				} else {
 					respond(res, 200, "No subscriptions found");
