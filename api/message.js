@@ -20,6 +20,7 @@ module.exports = function (router, db){
 		var message = data.body;
 
 		var whensMyGame = new RegExp('((what)|(who)|(when)|(where)).+((game)|(play)|(field))', 'i');
+		var playToday   = new RegExp('Do.+play.+today','i');
 
 		if (data.type !== 'text'){
 			sendMessage(username, 'I only know how to handle text :(');
@@ -33,7 +34,7 @@ module.exports = function (router, db){
 			handleSubscribe(data);
 		} else if (data.body.substring(0,11).toLowerCase() === 'unsubscribe'){
 			handleUnsubscribe(data);
-		} else if (whensMyGame.test(data.body)){
+		} else if (playToday.test(data.body) || whensMyGame.test(data.body)){
 			handleWhensMyNextGame(data);
 		} else if (data.body.indexOf('fun') !== -1 || data.body.indexOf('count') !== -1){
 			funMeter(data);
