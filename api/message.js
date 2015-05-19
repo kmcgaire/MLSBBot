@@ -4,6 +4,7 @@ var utils        = require('../lib/utils');
 
 var respond      = utils.respond;
 var sendMessage  = utils.sendMessage;
+var dateString   = utils.dateString;
 
 
 module.exports = function (router, db){
@@ -17,6 +18,8 @@ module.exports = function (router, db){
 		var data = req.body;
 		var message = data.body;
 
+		var whensMyGame = new RegExp('when.* game.*', 'i')
+
 		if (data.type !== 'text'){
 			sendMessage(username, 'I only know how to handle text :(');
 			return;
@@ -29,11 +32,30 @@ module.exports = function (router, db){
 			handleSubscribe(data);
 		} else if (data.body.substring(0,11).toLowerCase() === 'unsubscribe'){
 			handleUnsubscribe(data);
+		} else if (whensMyGame.test(data.body.substring)){
+			handleWhensMyNextGame(data);
 		} else {
 			sendMessage(data.from, "Someone has crossed my wires... I don't understand what you are saying");
 		}
 		return;
 	});
+
+	function handleWhensMyNextGame(data){
+		var username = data.from;
+		db.nextGame(username, function (data){
+			if (data.err || !data.results || data.results.length === 0){
+				sendMessage(username, "You have no games, maybe you aren't subscribed :(");
+			} else {
+				var game = data.results;
+				var message = "Your next game is %s:\n\n%s vs. %s, at %s - %s"
+				message = format(message, dateString(new Date(game.Date)), game.HomeTeam.toProperCase(), game.AwayTeam.toProperCase(), game.Time, game.Field);
+				sendMessage(username, 'Currently implementing this feature:)');
+				//sendMessage(username, message);
+				console.log(message);
+
+			}
+		});
+	}
 
 	function showSubscriptions(data){
 		var username = data.from;

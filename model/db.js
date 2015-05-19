@@ -26,7 +26,8 @@ module.exports = function(config){
 		getSubscriptionsForTeam     : getSubscriptionsForTeam,
 		getSubscriptionsForDate     : getSubscriptionsForDate,
 		addGame                     : addGame,
-		addTeam                     : addTeam
+		addTeam                     : addTeam,
+		nextGame                    : nextGame
 	};
 
 	function executeSQL(queryString, callback){
@@ -52,6 +53,20 @@ module.exports = function(config){
 
 	function normalizeTeam(team){
 		return team.replace(/\'/g,"").toLowerCase().trim();
+	}
+
+	function nextGame(username, callback){
+		var date = new Date();
+		var queryString = "SELECT * FROM Games inner join Subscriptions on Subscriptions.team=Games.HomeTeam or Subscriptions.team=Games.awayTeam WHERE Games.date>=%d and Subscriptions.username=%s order by Games.date ASC";
+		queryString = format(queryString, mysql.escape(date.setHours(0,0,0,0)), mysql.escape(username));
+		executeSQL(queryString,function (data){
+			if (data.err || !data.results || data.results.length === 0){
+				callback(data);
+			} else {
+				data.results = data.results[0];
+				callback(data);
+			}
+		});;
 	}
 
 	function addTeam(team, callback){
