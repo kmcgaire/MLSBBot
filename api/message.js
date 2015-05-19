@@ -22,7 +22,7 @@ module.exports = function (router, db){
 			return;
 		}
 		data.body = data.body.toLowerCase();
-		if (data.body = data.body.replace("sportzone", "sportszone"));
+		data.body = data.body.replace("sportzone", "sportszone");
 		if (data.body.substring(0,13).toLowerCase() === 'subscriptions'){
 			showSubscriptions(data);
 		} else if (data.body.substring(0,9).toLowerCase() === 'subscribe'){
