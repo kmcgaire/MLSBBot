@@ -35,7 +35,7 @@ module.exports = function (router, db){
 			handleUnsubscribe(data);
 		} else if (whensMyGame.test(data.body)){
 			handleWhensMyNextGame(data);
-		} else if (data.body.indexOf('fun') !== -1){
+		} else if (data.body.indexOf('fun') !== -1 || data.body.indexOf('count') !== -1){
 			funMeter(data);
 		} else {
 			sendMessage(data.from, "Someone has crossed my wires... I don't understand what you are saying");
