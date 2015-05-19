@@ -57,6 +57,10 @@ module.exports = function(config){
 
 	function nextGame(username, callback){
 		var date = new Date();
+		if (date.getHours()*60+date.getMinutes() >= 13*60+45){
+			//If after 1:45pm use tomorrow are the day
+			date = new Date(date.getTime() + 24 * 60 * 60 * 1000);
+		}
 		var queryString = "SELECT * FROM Games inner join Subscriptions on Subscriptions.team=Games.HomeTeam or Subscriptions.team=Games.awayTeam WHERE Games.date>=%d and Subscriptions.username=%s order by Games.date ASC";
 		queryString = format(queryString, mysql.escape(date.setHours(0,0,0,0)), mysql.escape(username));
 		executeSQL(queryString,function (data){
