@@ -148,7 +148,7 @@ module.exports = function (router, db){
 			} else {
 				var weather = body.weather[0].description;
 				var temp = parseInt(body.main.temp) - 273
-				console.log(format("Temp: %d\n%s",temp,weather));
+				sendMessage(username, format("Temp: %d°C\n%s",temp,weather));
 			}
 		});
 	};
