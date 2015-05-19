@@ -32,7 +32,7 @@ module.exports = function (router, db){
 			handleSubscribe(data);
 		} else if (data.body.substring(0,11).toLowerCase() === 'unsubscribe'){
 			handleUnsubscribe(data);
-		} else if (whensMyGame.test(data.body.substring)){
+		} else if (whensMyGame.test(data.body)){
 			handleWhensMyNextGame(data);
 		} else {
 			sendMessage(data.from, "Someone has crossed my wires... I don't understand what you are saying");
