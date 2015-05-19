@@ -121,6 +121,8 @@ module.exports = function (router, db){
 
 		request(options, function (error, response, body){
 			if (error || response.status !== 200) {
+				console.log(error);
+				console.log(response.status);
 				sendMessage(username, "Sorry I was unable to determine the amount of fun we are having :(");
 			} else {
 				var html = body.split('data-start-value');
