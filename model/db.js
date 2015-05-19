@@ -165,7 +165,6 @@ module.exports = function(config){
 		});                                     // process asynchronous requests in the meantime.
 		                                  // If you're also serving http, display a 503 error.
 		connection.on('error', function(err) {
-			console.log('db error', err);
 			if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
 				console.log('handlingDisconnectAgain');
 				handleDisconnect();                         // lost due to either server restart, or a
