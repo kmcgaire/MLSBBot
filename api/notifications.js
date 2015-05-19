@@ -7,11 +7,22 @@ var sendMessage  = utils.sendMessage;
 module.exports = function(router,
 		 db){
 
-	//TODO remove
-	router.post('/notifications', function (req,res){
-		notifySubscribers();
-		respond(res, 200);
-	});
+	// router.post('/notifications', function (req,res){
+	// 	db.getSubscriptionsForDate(new Date(2015,5,9), function(data){
+	// 		if (!data || data.err || !data.results || data.results.length === 0){
+	// 			callback && callback(false);
+	// 			return;
+	// 		}
+	// 		for (var i = 0; i < data.results.length; i++){
+	// 			console.log(data.results[i]);
+	// 			var game = data.results[i];
+	// 			var message = "Good morning! %s have a game today:\n\n%s vs. %s, at %s - %s \n\nBest of luck!"
+	// 			message = format(message, game.Username, game.HomeTeam.toProperCase(), game.AwayTeam.toProperCase(), game.Time, game.Field);
+	// 			sendMessage('kmcgaire', message);
+	// 		}
+	// 	});
+	// 	respond(res, 200);
+	// });
 
 	var millisecondInDay = 60*60*24*1000;
 	var now = new Date();
