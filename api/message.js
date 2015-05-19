@@ -49,10 +49,7 @@ module.exports = function (router, db){
 				var game = data.results;
 				var message = "Your next game is %s:\n\n%s vs. %s, at %s - %s"
 				message = format(message, dateString(new Date(game.Date)), game.HomeTeam.toProperCase(), game.AwayTeam.toProperCase(), game.Time, game.Field);
-				sendMessage(username, 'Currently implementing this feature:)');
-				//sendMessage(username, message);
-				console.log(message);
-
+				sendMessage(username, message);
 			}
 		});
 	}
