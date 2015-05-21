@@ -19,7 +19,7 @@ module.exports = function (router, db){
 		var data = req.body;
 		var message = data.body;
 
-		var whensMyGame = new RegExp('((what)|(who)|(when)|(where)).+((game)|(play)|(field))', 'i');
+		var whensMyGame = new RegExp('((what)|(who)|(when)|(where)).+((game)|(facing)|(play)|(field))', 'i');
 		var playToday   = new RegExp('Do.+play.+today','i');
 
 		if (data.type !== 'text'){
