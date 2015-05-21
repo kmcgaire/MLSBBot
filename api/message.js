@@ -109,7 +109,7 @@ module.exports = function (router, db){
 			} else if (data.dup){
 				sendMessage(username, format("Already subscribed to %s", team));
 			} else {
-				sendMessage(username, format("Successfully subscribed you to %s, I will update you at 10am any day you play baseball!", team));
+				sendMessage(username, format("Successfully subscribed you to %s, I will update you at 7:45am any day you play baseball!", team));
 			}
 		});
 	};
