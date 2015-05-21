@@ -14,6 +14,15 @@ module.exports = function (router, db){
 
 	//Should be in DB but like w.e
 	var states = {};
+	var domusLeader;
+	var sentryLeader;
+
+	var hour = 60*60*1000;
+
+	updateDomusLeader();
+	setInterval(function(){
+		updateDomusLeader();
+	}, hour);
 
 	router.post('/message', function (req, res){
 		if (!auth.isCoreApiSignatureValid(req.rawBody, req.headers['x-kik-signature'])){
@@ -49,6 +58,8 @@ module.exports = function (router, db){
 			getWeather(data);
 		} else if (data.body.indexOf('joke') !== -1){
 			sendJokes(data);
+		} else if (data.body.indexOf('domus') !== -1){
+			handleDomusLeader(data);
 		} else {
 			handleNoMatch(data);
 		}
@@ -142,6 +153,48 @@ module.exports = function (router, db){
 			}
 		})
 	};
+
+	function updateDomusLeader(callback){
+		var options = {
+				uri: 'http://www.mlsb.ca/index.php/race-for-the-domus-cup/',
+				method: 'GET'
+			}
+			request(options, function (error, response, body){
+				if (error || response.statusCode !== 200) {
+					callback && callback(false);
+				} else {
+					var html = body.split('row-2 even')[1].split("<");
+					var name = html[2].split("<")[0];
+					var runs = html[6].split('<')[0];
+					domusLeader = {
+						name: name,
+						runs: runs
+					}
+					console.log(format("Domus Leader is :%s with %s HRs", name, runs));
+					callback && callback(true);
+				}
+			});
+	}
+
+	function handleDomusLeader(data){
+		var username = data.from;
+		if (!domusLeader || !domusLeader.name || !domusLeader.runs){
+			sendMessage(username, "The domus leader is......");
+			updateDomusLeader(function (status){
+				if (status){
+					sendDomusMessage();
+				} else {
+					sendMessage(username, "Sorry the website is being to slow:(");
+				}
+			});
+		} else {
+			sendDomusMessage();
+		}
+
+		function sendDomusMessage(){
+			sendMessage(username, format("The Domus leader is %s with %s HRs",domusLeader.name.toProperCase(), domusLeader.runs));
+		};
+	}
 
 	function getWeather(data){
 		var username = data.from;
