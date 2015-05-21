@@ -156,24 +156,24 @@ module.exports = function (router, db){
 
 	function updateDomusLeader(callback){
 		var options = {
-				uri: 'http://www.mlsb.ca/index.php/race-for-the-domus-cup/',
-				method: 'GET'
-			}
-			request(options, function (error, response, body){
-				if (error || response.statusCode !== 200) {
-					callback && callback(false);
-				} else {
-					var html = body.split('row-2 even')[1].split("<");
-					var name = html[2].split("<")[0];
-					var runs = html[6].split('<')[0];
-					domusLeader = {
-						name: name,
-						runs: runs
-					}
-					console.log(format("Domus Leader is :%s with %s HRs", name, runs));
-					callback && callback(true);
+			uri: 'http://www.mlsb.ca/index.php/race-for-the-domus-cup/',
+			method: 'GET'
+		}
+		request(options, function (error, response, body){
+			if (error || response.statusCode !== 200) {
+				callback && callback(false);
+			} else {
+				html = body.split('row-2 even')[1].split(">");
+				var name = html[2].split("<")[0];
+				var runs = html[6].split('<')[0];
+				domusLeader = {
+					name: name,
+					runs: runs
 				}
-			});
+				console.log(format("Domus Leader is :%s with %s HRs", name, runs));
+				callback && callback(true);
+			}
+		});
 	}
 
 	function handleDomusLeader(data){
