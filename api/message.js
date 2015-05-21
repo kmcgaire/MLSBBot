@@ -164,7 +164,7 @@ module.exports = function (router, db){
 
 
 	function handleNoMatch(data){
-		sendMessage(data.from, "Someone has crossed my wires... I don't understand what you are saying");
+		sendMessage(data.from, "Thanks:) I think, not sure what you said");
 	}
 
 	function sendJokes(data){
