@@ -1,7 +1,9 @@
-var format       = require('util').format
-var Auth         = require('../lib/auth');
-var utils        = require('../lib/utils');
 var request      = require('request');
+var format       = require('util').format
+var auth         = require('../lib/auth');
+var utils        = require('../lib/utils');
+
+var jokes = require('../lib/jokes.json');
 
 var respond      = utils.respond;
 var sendMessage  = utils.sendMessage;
@@ -10,8 +12,11 @@ var dateString   = utils.dateString;
 
 module.exports = function (router, db){
 
+	//Should be in DB but like w.e
+	var states = {};
+
 	router.post('/message', function (req, res){
-		if (!Auth.isCoreApiSignatureValid(req.rawBody, req.headers['x-kik-signature'])){
+		if (!auth.isCoreApiSignatureValid(req.rawBody, req.headers['x-kik-signature'])){
 			respond(res, 400);
 			return;
 		}
@@ -19,7 +24,7 @@ module.exports = function (router, db){
 		var data = req.body;
 		var message = data.body;
 
-	var whensMyGame = new RegExp('((what)|(who)|(when)|(where)|(next)).+((game)|(facing)|(play)|(field))', 'i');
+		var whensMyGame = new RegExp('((what)|(who)|(when)|(where)|(next)).+((game)|(facing)|(play)|(field))', 'i');
 		var playToday   = new RegExp('Do.+play.+today','i');
 
 		if (data.type !== 'text'){
@@ -34,14 +39,18 @@ module.exports = function (router, db){
 			handleSubscribe(data);
 		} else if (data.body.substring(0,11).toLowerCase() === 'unsubscribe'){
 			handleUnsubscribe(data);
+		} else if (states[data.from] && states[data.from].jokeState){
+			sendJokes(data);
 		} else if (playToday.test(data.body) || whensMyGame.test(data.body)){
 			handleWhensMyNextGame(data);
 		} else if (data.body.indexOf('fun') !== -1 || data.body.indexOf('count') !== -1){
 			funMeter(data);
 		} else if (data.body.indexOf('weather') !== -1){
 			getWeather(data);
+		} else if (data.body.indexOf('joke') !== -1){
+			sendJokes(data);
 		} else {
-			sendMessage(data.from, "Someone has crossed my wires... I don't understand what you are saying");
+			handleNoMatch(data);
 		}
 		return;
 	});
@@ -152,4 +161,27 @@ module.exports = function (router, db){
 			}
 		});
 	};
+
+
+	function handleNoMatch(data){
+		sendMessage(data.from, "Someone has crossed my wires... I don't understand what you are saying");
+	}
+
+	function sendJokes(data){
+		if (states[data.from] && states[data.from].jokeState){
+			sendMessage(data.from, states[data.from].jokeResponse);
+			states[data.from].jokeState = false;
+			return;
+		}
+		var jokeIndex = Math.floor(Math.random()*jokes.length)
+		var joke = jokes[jokeIndex][0];
+		var response = jokes[jokeIndex][1];
+		states[data.from] = {
+			jokeState: true,
+			jokeResponse: response
+		}
+		sendMessage(data.from, joke);
+
+	}
+
 }
