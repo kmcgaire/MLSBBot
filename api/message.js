@@ -20,8 +20,10 @@ module.exports = function (router, db){
 	var hour = 60*60*1000;
 
 	updateDomusLeader();
+	updateSentryLeader();
 	setInterval(function(){
 		updateDomusLeader();
+		updateSentryLeader();
 	}, hour);
 
 	router.post('/message', function (req, res){
@@ -60,6 +62,8 @@ module.exports = function (router, db){
 			sendJokes(data);
 		} else if (data.body.indexOf('domus') !== -1){
 			handleDomusLeader(data);
+		} else if (data.body.indexOf('sentry') !== -1){
+			handleSentryLeader(data);
 		} else {
 			handleNoMatch(data);
 		}
@@ -154,6 +158,28 @@ module.exports = function (router, db){
 		})
 	};
 
+	function updateSentryLeader(callback){
+		var options = {
+			uri: 'http://www.mlsb.ca/index.php/sentry-singles-competition/',
+			method: 'GET'
+		}
+		request(options, function (error, response, body){
+			if (error || response.statusCode !== 200) {
+				callback && callback(false);
+			} else {
+				html = body.split('row-2 even')[1].split(">");
+				var name = html[2].split("<")[0];
+				var runs = html[6].split('<')[0];
+				sentryLeader = {
+					name: name,
+					runs: runs
+				}
+				console.log(format("sentryLeader Leader is :%s with %s HRs", name, runs));
+				callback && callback(true);
+			}
+		});
+	}
+
 	function updateDomusLeader(callback){
 		var options = {
 			uri: 'http://www.mlsb.ca/index.php/race-for-the-domus-cup/',
@@ -174,6 +200,26 @@ module.exports = function (router, db){
 				callback && callback(true);
 			}
 		});
+	}
+
+	function handleSentryLeader(data){
+		var username = data.from;
+		if (!sentryLeader || !sentryLeader.name || !sentryLeader.runs){
+			sendMessage(username, "The Sentry leader is......");
+			updateSentryLeader(function (status){
+				if (status){
+					sendSentryMessage();
+				} else {
+					sendMessage(username, "Sorry the website is being to slow:(");
+				}
+			});
+		} else {
+			sendDomusMessage();
+		}
+
+		function sendSentryMessage(){
+			sendMessage(username, format("The Sendtry leader is %s with %s Singies",domusLeader.name.toProperCase(), domusLeader.runs));
+		};
 	}
 
 	function handleDomusLeader(data){
