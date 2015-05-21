@@ -218,7 +218,7 @@ module.exports = function (router, db){
 		}
 
 		function sendSentryMessage(){
-			sendMessage(username, format("The Sendtry leader is %s with %s Singies",sentryLeader.name.toProperCase(), sentryLeader.hits));
+			sendMessage(username, format("The Sentry leader is %s with %s singies",sentryLeader.name.toProperCase(), sentryLeader.hits));
 		};
 	}
 
