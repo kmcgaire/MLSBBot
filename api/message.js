@@ -169,12 +169,12 @@ module.exports = function (router, db){
 			} else {
 				html = body.split('row-2 even')[1].split(">");
 				var name = html[2].split("<")[0];
-				var runs = html[6].split('<')[0];
+				var hits = html[6].split('<')[0];
 				sentryLeader = {
 					name: name,
-					runs: runs
+					hits: hits
 				}
-				console.log(format("sentryLeader Leader is :%s with %s HRs", name, runs));
+				console.log(format("Sentry Leader Leader is :%s with %s singies", name, hits));
 				callback && callback(true);
 			}
 		});
@@ -204,7 +204,7 @@ module.exports = function (router, db){
 
 	function handleSentryLeader(data){
 		var username = data.from;
-		if (!sentryLeader || !sentryLeader.name || !sentryLeader.runs){
+		if (!sentryLeader || !sentryLeader.name || !sentryLeader.hits){
 			sendMessage(username, "The Sentry leader is......");
 			updateSentryLeader(function (status){
 				if (status){
@@ -214,11 +214,11 @@ module.exports = function (router, db){
 				}
 			});
 		} else {
-			sendDomusMessage();
+			sendSentryMessage();
 		}
 
 		function sendSentryMessage(){
-			sendMessage(username, format("The Sendtry leader is %s with %s Singies",domusLeader.name.toProperCase(), domusLeader.runs));
+			sendMessage(username, format("The Sendtry leader is %s with %s Singies",sentryLeader.name.toProperCase(), sentryLeader.hits));
 		};
 	}
 
