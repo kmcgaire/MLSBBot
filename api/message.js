@@ -175,13 +175,14 @@ module.exports = function (router, db){
 		}
 		var jokeIndex = Math.floor(Math.random()*jokes.length)
 		var joke = jokes[jokeIndex][0];
-		var response = jokes[jokeIndex][1];
-		states[data.from] = {
-			jokeState: true,
-			jokeResponse: response
+		if (jokes[jokeIndex].length !== 1){
+			var response = jokes[jokeIndex][1];
+			states[data.from] = {
+				jokeState: true,
+				jokeResponse: response
+			}
 		}
 		sendMessage(data.from, joke);
-
 	}
 
 }
