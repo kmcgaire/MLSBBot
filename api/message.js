@@ -218,7 +218,7 @@ module.exports = function (router, db){
 		}
 
 		function sendSentryMessage(){
-			sendMessage(username, format("The Sentry leader is %s with %s singies",sentryLeader.name.toProperCase(), sentryLeader.hits));
+			sendMessage(username, format("The Sentry leader is %s with %s singies",sentryLeader.name, sentryLeader.hits));
 		};
 	}
 
@@ -238,7 +238,7 @@ module.exports = function (router, db){
 		}
 
 		function sendDomusMessage(){
-			sendMessage(username, format("The Domus leader is %s with %s HRs",domusLeader.name.toProperCase(), domusLeader.runs));
+			sendMessage(username, format("The Domus leader is %s with %s HRs",domusLeader.name, domusLeader.runs));
 		};
 	}
 
