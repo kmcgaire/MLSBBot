@@ -49,43 +49,44 @@ module.exports = function (router, db){
 		}
 		if (whitelisted.indexOf(data.from) !== -1 && data.body.substring(0,5).toLowerCase() === 'blast'){
 			sendBlast(data);
-			return;
-		}
-		data.body = data.body.toLowerCase();
-		data.body = data.body.replace("sportzone", "sportszone");
-		if (data.body.substring(0,13) === 'subscriptions'){
-			showSubscriptions(data);
-		} else if (data.body.substring(0,9) === 'subscribe'){
-			handleSubscribe(data);
-		} else if (data.body.substring(0,11) === 'unsubscribe'){
-			handleUnsubscribe(data);
-		} else if (states[data.from] && states[data.from].jokeState){
-			sendJokes(data);
-		} else if (playToday.test(data.body) || whensMyGame.test(data.body)){
-			handleWhensMyNextGame(data);
-		} else if (data.body.indexOf('fun') !== -1 || data.body.indexOf('count') !== -1){
-			funMeter(data);
-		} else if (data.body.indexOf('weather') !== -1){
-			getWeather(data);
-		} else if (data.body.indexOf('joke') !== -1){
-			sendJokes(data);
-		} else if (data.body.indexOf('domus') !== -1){
-			handleDomusLeader(data);
-		} else if (data.body.indexOf('sentry') !== -1){
-			handleSentryLeader(data);
-		} else  {
-			handleNoMatch(data);
+		} else {
+			data.body = data.body.toLowerCase();
+			data.body = data.body.replace("sportzone", "sportszone");
+			if (data.body.substring(0,13) === 'subscriptions'){
+				showSubscriptions(data);
+			} else if (data.body.substring(0,9) === 'subscribe'){
+				handleSubscribe(data);
+			} else if (data.body.substring(0,11) === 'unsubscribe'){
+				handleUnsubscribe(data);
+			} else if (states[data.from] && states[data.from].jokeState){
+				sendJokes(data);
+			} else if (playToday.test(data.body) || whensMyGame.test(data.body)){
+				handleWhensMyNextGame(data);
+			} else if (data.body.indexOf('fun') !== -1 || data.body.indexOf('count') !== -1){
+				funMeter(data);
+			} else if (data.body.indexOf('weather') !== -1){
+				getWeather(data);
+			} else if (data.body.indexOf('joke') !== -1){
+				sendJokes(data);
+			} else if (data.body.indexOf('domus') !== -1){
+				handleDomusLeader(data);
+			} else if (data.body.indexOf('sentry') !== -1){
+				handleSentryLeader(data);
+			} else  {
+				handleNoMatch(data);
+			}
 		}
 		return;
 	});
 
 	function sendBlast(data){
 		var index = 6;
-		if (message.indexOf(":") !== -1){
+		if (data.body.indexOf(":") !== -1){
 			index++;
 		}
 		var blastUsername = data.from;
 		var message = data.body.substring(index);
+		console.log('Want to blast all users with' + message);
 		db.getAllUsernames(function(data){
 			if (data.err || !data.results || data.results.length === 0){
 				sendMessage(blastUsername, "Blast failed talk to kevin");
