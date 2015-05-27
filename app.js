@@ -32,6 +32,7 @@ var app = http.createServer(function (req, res) {
 
 
 require('./api/message')(router, db);
+require('./api/health')(router);
 require('./api/subscriptions')(router, db);
 require('./api/games')(router, db);
 require('./api/notifications')(router,db);

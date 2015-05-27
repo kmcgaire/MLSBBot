@@ -8,39 +8,28 @@ module.exports = function(router,
 		 db){
 
 	// router.post('/notifications', function (req,res){
-	// 	db.getSubscriptionsForDate(new Date(2015,5,9), function(data){
-	// 		if (!data || data.err || !data.results || data.results.length === 0){
-	// 			callback && callback(false);
-	// 			return;
-	// 		}
-	// 		for (var i = 0; i < data.results.length; i++){
-	// 			console.log(data.results[i]);
-	// 			var game = data.results[i];
-	// 			var message = "Good morning! %s have a game today:\n\n%s vs. %s, at %s - %s \n\nBest of luck!"
-	// 			message = format(message, game.Username, game.HomeTeam.toProperCase(), game.AwayTeam.toProperCase(), game.Time, game.Field);
-	// 			sendMessage('kmcgaire', message);
-	// 		}
-	// 	});
+	// 	notifySubscribers(function(){});
 	// 	respond(res, 200);
 	// });
 
 	var millisecondInDay = 60*60*24*1000;
 	var now = new Date();
-	var millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 45, 0, 0) - now;
-	if (millisTill10 < 0) {
-	     millisTill10 += millisecondInDay; // it's after 10am, try 10am tomorrow.
+	var millisTill745 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 45, 0, 0) - now;
+	if (millisTill745 < 0) {
+	     millisTill745 += millisecondInDay; // it's after 7:45am, try 7:45 tomorrow.
 	}
 
 	setReminders();
 
 	function setReminders(){
-		console.log('Setting reminders for ' + new Date(now.getTime() + millisTill10));
+		console.log('Setting reminders for ' + new Date(now.getTime() + millisTill745));
 		setTimeout(function(){
 			notifySubscribers();
 			setInterval(function(){
+				console.log('Setting reminders for ' + new Date(now.getTime() + millisecondInDay));
 				notifySubscribers();
 			}, millisecondInDay);
-		}, millisTill10);
+		}, millisTill745);
 	}
 
 
