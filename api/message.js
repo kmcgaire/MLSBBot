@@ -91,13 +91,12 @@ module.exports = function (router, db){
 			if (data.err || !data.results || data.results.length === 0){
 				sendMessage(blastUsername, "Blast failed talk to kevin");
 			} else {
-				sendMessage(blastUsername, "Blasing users with:");
+				sendMessage(blastUsername, "Blasting users with: ");
 				sendMessage(blastUsername, message);
 				var usernames = data.results;
 				usernames.forEach(function(userData){
 					var username = userData.username;
-					sendMessage(blastUsername, username);
-					//sendMessage(username, message);
+					sendMessage(username, message);
 				})
 			}
 		})
