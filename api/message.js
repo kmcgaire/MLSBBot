@@ -20,8 +20,7 @@ module.exports = function (router, db){
 	var hour = 60*60*1000;
 
 	var whitelisted = [
-		'plleras',
-		'kmcgaire'
+		'plleras'
 	]
 
 	updateDomusLeader();
