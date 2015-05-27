@@ -19,6 +19,11 @@ module.exports = function (router, db){
 
 	var hour = 60*60*1000;
 
+	var whitelisted = [
+		'plleras',
+		'kmcgaire'
+	]
+
 	updateDomusLeader();
 	updateSentryLeader();
 	setInterval(function(){
@@ -42,13 +47,17 @@ module.exports = function (router, db){
 			sendMessage(username, 'I only know how to handle text :(');
 			return;
 		}
+		if (whitelisted.indexOf(data.from) !== -1 && data.body.substring(0,5).toLowerCase() === 'blast'){
+			sendBlast(data);
+			return;
+		}
 		data.body = data.body.toLowerCase();
 		data.body = data.body.replace("sportzone", "sportszone");
-		if (data.body.substring(0,13).toLowerCase() === 'subscriptions'){
+		if (data.body.substring(0,13) === 'subscriptions'){
 			showSubscriptions(data);
-		} else if (data.body.substring(0,9).toLowerCase() === 'subscribe'){
+		} else if (data.body.substring(0,9) === 'subscribe'){
 			handleSubscribe(data);
-		} else if (data.body.substring(0,11).toLowerCase() === 'unsubscribe'){
+		} else if (data.body.substring(0,11) === 'unsubscribe'){
 			handleUnsubscribe(data);
 		} else if (states[data.from] && states[data.from].jokeState){
 			sendJokes(data);
@@ -64,11 +73,34 @@ module.exports = function (router, db){
 			handleDomusLeader(data);
 		} else if (data.body.indexOf('sentry') !== -1){
 			handleSentryLeader(data);
-		} else {
+		} else  {
 			handleNoMatch(data);
 		}
 		return;
 	});
+
+	function sendBlast(data){
+		var index = 6;
+		if (message.indexOf(":") !== -1){
+			index++;
+		}
+		var blastUsername = data.from;
+		var message = data.body.substring(index);
+		db.getAllUsernames(function(data){
+			if (data.err || !data.results || data.results.length === 0){
+				sendMessage(blastUsername, "Blast failed talk to kevin");
+			} else {
+				sendMessage(blastUsername, "Blasing users with:");
+				sendMessage(blastUsername, message);
+				var usernames = data.results;
+				usernames.forEach(function(userData){
+					var username = userData.username;
+					sendMessage(blastUsername, username);
+					//sendMessage(username, message);
+				})
+			}
+		})
+	}
 
 	function handleWhensMyNextGame(data){
 		var username = data.from;

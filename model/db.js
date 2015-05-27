@@ -28,7 +28,8 @@ module.exports = function(config){
 		addGame                     : addGame,
 		addTeam                     : addTeam,
 		nextGame                    : nextGame,
-		getAllSubscriptions         : getAllSubscriptions
+		getAllSubscriptions         : getAllSubscriptions,
+		getAllUsernames             : getAllUsernames
 	};
 
 	function executeSQL(queryString, callback){
@@ -53,6 +54,11 @@ module.exports = function(config){
 
 	function normalizeTeam(team){
 		return team.replace(/\'/g,"").toLowerCase().trim();
+	}
+
+	function getAllUsernames(callback){
+		var queryString = "SELECT distinct Subscriptions.username FROM Subscriptions";
+		executeSQL(queryString, callback);
 	}
 
 	function nextGame(username, callback){
