@@ -43,13 +43,12 @@ module.exports = function (router, db){
 			});
 		} else {
 			//Backwards Compatiable
-			parseMessage(req.body);
+			parseMessage(body);
 		}
 
 	});
 
 	function parseMessage(data){
-			var data = req.body;
 			var message = data.body;
 
 			var whensMyGame = new RegExp('((what)|(who)|(when)|(where)|(next)).+((game)|(facing)|(play)|(field))', 'i');
