@@ -36,47 +36,60 @@ module.exports = function (router, db){
 			return;
 		}
 		respond(res, 200);
-		var data = req.body;
-		var message = data.body;
+		var body = req.body;
+		if (body.messages && Array.isArray(body.messages)){
+			body.messages.forEach(function (data){
+				parseMessage(data);
+			});
+		} else {
+			//Backwards Compatiable
+			parseMessage(req.body);
+		}
 
-		var whensMyGame = new RegExp('((what)|(who)|(when)|(where)|(next)).+((game)|(facing)|(play)|(field))', 'i');
-		var playToday   = new RegExp('Do.+play.+today','i');
+	});
 
-		if (data.type !== 'text'){
-			sendMessage(username, 'I only know how to handle text :(');
+	function parseMessage(data){
+			var data = req.body;
+			var message = data.body;
+
+			var whensMyGame = new RegExp('((what)|(who)|(when)|(where)|(next)).+((game)|(facing)|(play)|(field))', 'i');
+			var playToday   = new RegExp('Do.+play.+today','i');
+
+			if (data.type !== 'text'){
+				sendMessage(username, 'I only know how to handle text :(');
+				return;
+			}
+			if (whitelisted.indexOf(data.from) !== -1 && data.body.substring(0,5).toLowerCase() === 'blast'){
+				sendBlast(data);
+			} else {
+				data.body = data.body.toLowerCase();
+				data.body = data.body.replace("sportzone", "sportszone");
+				if (data.body.substring(0,13) === 'subscriptions'){
+					showSubscriptions(data);
+				} else if (data.body.substring(0,9) === 'subscribe'){
+					handleSubscribe(data);
+				} else if (data.body.substring(0,11) === 'unsubscribe'){
+					handleUnsubscribe(data);
+				} else if (states[data.from] && states[data.from].jokeState){
+					sendJokes(data);
+				} else if (playToday.test(data.body) || whensMyGame.test(data.body)){
+					handleWhensMyNextGame(data);
+				} else if (data.body.indexOf('fun') !== -1 || data.body.indexOf('count') !== -1){
+					funMeter(data);
+				} else if (data.body.indexOf('weather') !== -1){
+					getWeather(data);
+				} else if (data.body.indexOf('joke') !== -1){
+					sendJokes(data);
+				} else if (data.body.indexOf('domus') !== -1){
+					handleDomusLeader(data);
+				} else if (data.body.indexOf('sentry') !== -1){
+					handleSentryLeader(data);
+				} else  {
+					handleNoMatch(data);
+				}
+			}
 			return;
 		}
-		if (whitelisted.indexOf(data.from) !== -1 && data.body.substring(0,5).toLowerCase() === 'blast'){
-			sendBlast(data);
-		} else {
-			data.body = data.body.toLowerCase();
-			data.body = data.body.replace("sportzone", "sportszone");
-			if (data.body.substring(0,13) === 'subscriptions'){
-				showSubscriptions(data);
-			} else if (data.body.substring(0,9) === 'subscribe'){
-				handleSubscribe(data);
-			} else if (data.body.substring(0,11) === 'unsubscribe'){
-				handleUnsubscribe(data);
-			} else if (states[data.from] && states[data.from].jokeState){
-				sendJokes(data);
-			} else if (playToday.test(data.body) || whensMyGame.test(data.body)){
-				handleWhensMyNextGame(data);
-			} else if (data.body.indexOf('fun') !== -1 || data.body.indexOf('count') !== -1){
-				funMeter(data);
-			} else if (data.body.indexOf('weather') !== -1){
-				getWeather(data);
-			} else if (data.body.indexOf('joke') !== -1){
-				sendJokes(data);
-			} else if (data.body.indexOf('domus') !== -1){
-				handleDomusLeader(data);
-			} else if (data.body.indexOf('sentry') !== -1){
-				handleSentryLeader(data);
-			} else  {
-				handleNoMatch(data);
-			}
-		}
-		return;
-	});
 
 	function sendBlast(data){
 		var index = 6;
