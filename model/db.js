@@ -41,6 +41,7 @@ module.exports = function(config){
 		console.log("EXECUTING SQL: " + queryString);
 		connection.query(queryString).on('error', function(e){
 			if (e.code !== "ER_DUP_ENTRY"){
+				console.log(e);
 				data.err = true;
 			} else {
 				data.dup = true;
@@ -131,7 +132,7 @@ module.exports = function(config){
 		homeTeam = normalizeTeam(homeTeam)
 		awayTeam = normalizeTeam(awayTeam);
 		if(['11:45', '12:45', '1:45'].indexOf(time) == -1){
-			console.lerror(format('Invalid time %s for adding a game', time));
+			console.error(format('Invalid time %s for adding a game', time));
 			callback && callback();
 			return;			db.getGames(data.team, handleRes)
 
