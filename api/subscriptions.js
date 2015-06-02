@@ -18,7 +18,7 @@ module.exports = function (router, db){
 		var team = decodeURIComponent(data.team);
 		db.getSubscriptionsForTeam(team, function (data){
 			if (data.results && data.results.length > 0){
-				respond(res, 200, JSON.stringify(data.results));
+				respond(res, 200, data.results.length.toString() + "\n" + JSON.stringify(data.results));
 				return;
 			} else {
 				respond(res, 200, "No subscriptions found");
@@ -33,7 +33,7 @@ module.exports = function (router, db){
 		if (data && data.username){
 			db.getSubscriptionsForUsername(data.username, function (data){
 				if (data.results && data.results.length > 0){
-					respond(res, 200, JSON.stringify(data.results));
+					respond(res, 200, data.results.length.toString() + "\n" + JSON.stringify(data.results));
 					return;
 				} else {
 					respond(res, 200, "No subscriptions found");
@@ -45,7 +45,7 @@ module.exports = function (router, db){
 				if (data.results && data.results.length > 0){
 					var subs = JSON.stringify(data.results);
 					subs = subs.replace(/},/g,"},\n")
-					respond(res, 200, subs);
+					respond(res, 200, data.results.length.toString() + "\n" subs);
 					return;
 				} else {
 					respond(res, 200, "No subscriptions found");
