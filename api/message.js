@@ -92,7 +92,7 @@ module.exports = function (router, db){
 
 	function sendBlast(data){
 		var index = 6;
-		if (data.body.indexOf(":") !== -1){
+		if (data.body[5] === ":"){
 			index++;
 		}
 		var blastUsername = data.from;
