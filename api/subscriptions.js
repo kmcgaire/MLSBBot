@@ -45,7 +45,7 @@ module.exports = function (router, db){
 				if (data.results && data.results.length > 0){
 					var subs = JSON.stringify(data.results);
 					subs = subs.replace(/},/g,"},\n")
-					respond(res, 200, data.results.length.toString() + "\n" subs);
+					respond(res, 200, data.results.length.toString() + "\n" + subs);
 					return;
 				} else {
 					respond(res, 200, "No subscriptions found");
