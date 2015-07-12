@@ -55,7 +55,6 @@ module.exports = function (router, db){
 			var playToday   = new RegExp('Do.+play.+today','i');
 
 			if (data.type !== 'text'){
-				sendMessage(data.from, 'I only know how to handle text :(');
 				return;
 			}
 			if (whitelisted.indexOf(data.from) !== -1 && data.body.substring(0,5).toLowerCase() === 'blast'){
