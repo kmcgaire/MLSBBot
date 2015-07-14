@@ -54,17 +54,13 @@ module.exports = function (router, db){
 			var whensMyGame = new RegExp('((what)|(who)|(when)|(where)|(next)).+((game)|(facing)|(play)|(field))', 'i');
 			var playToday   = new RegExp('Do.+play.+today','i');
 
-			if (data.type !== 'text'){
-				return;
-			}
-
-			console.log(data.type === 'is-typing');
-			console.log(data.from === 'kmcgaire');
-
 
 			if (data.type === 'is-typing' && (data.from === 'plleras' || data.from === 'kmcgaire')){
-				console.log('typing');
 				sendMessage(data.from, "Bro I see you typing");
+			}
+
+			if (data.type !== 'text'){
+				return;
 			}
 			if (whitelisted.indexOf(data.from) !== -1 && data.body.substring(0,5).toLowerCase() === 'blast'){
 				sendBlast(data);
