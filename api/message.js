@@ -54,9 +54,16 @@ module.exports = function (router, db){
 			var whensMyGame = new RegExp('((what)|(who)|(when)|(where)|(next)).+((game)|(facing)|(play)|(field))', 'i');
 			var playToday   = new RegExp('Do.+play.+today','i');
 
+			var lock = false;
 
 			if (data.type === 'is-typing' && (data.from === 'plleras' || data.from === 'kmcgaire')){
-				sendMessage(data.from, "Bro I see you typing");
+				if (!lock){
+					sendMessage(data.from, "Bro I see you typing");
+					lock = true;
+					setTimeout(function(){
+						lock = false;
+					}, 2000)
+				}
 			}
 
 			if (data.type !== 'text'){
