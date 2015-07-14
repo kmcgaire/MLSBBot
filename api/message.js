@@ -17,7 +17,11 @@ module.exports = function (router, db){
 	var domusLeader;
 	var sentryLeader;
 
+	var fields = [];
+
+
 	var hour = 60*60*1000;
+	var minute = 1000*60;
 
 	var whitelisted = [
 		'plleras'
@@ -25,10 +29,15 @@ module.exports = function (router, db){
 
 	updateDomusLeader();
 	updateSentryLeader();
+	fieldConditions();
 	setInterval(function(){
 		updateDomusLeader();
 		updateSentryLeader();
 	}, hour);
+
+	setInterval(function(){
+		fieldConditions();
+	}, 15 * minute);
 
 	router.post('/message', function (req, res){
 		if (!auth.isCoreApiSignatureValid(req.rawBody, req.headers['x-kik-signature'])){
@@ -94,6 +103,8 @@ module.exports = function (router, db){
 					handleDomusLeader(data);
 				} else if (data.body.indexOf('sentry') !== -1){
 					handleSentryLeader(data);
+				} else if (data.body.indexOf('field conditions') !== -1){
+					handleFieldConditions(data);
 				} else  {
 					handleNoMatch(data);
 				}
@@ -234,6 +245,26 @@ module.exports = function (router, db){
 		});
 	}
 
+	function fieldConditions(callback){
+		var options = {
+			uri: 'http://www.waterloo.ca/en/living/fieldsandballdiamonds.asp',
+			method: 'GET'
+		}
+		request(options, function (error, response, body){
+			if (error || response.statusCode !== 200) {
+				callback && callback(false);
+			} else {
+				for (var i = 0; i < 4; i++){
+					fields[i] = body.split('Waterloo Park Diamond ' + (i + 1))[1].split(";")[1].split('<')[0];
+				}
+				for (var i = 0; i < 4; i++){
+					console.log("Field WP" + (i+1) + ": " + fields[i]);
+				}
+				callback && callback(true);
+			}
+		});
+	}
+
 	function updateDomusLeader(callback){
 		var options = {
 			uri: 'http://www.mlsb.ca/index.php/race-for-the-domus-cup/',
@@ -294,6 +325,15 @@ module.exports = function (router, db){
 		function sendDomusMessage(){
 			sendMessage(username, format("The Domus leader is %s with %s HRs",domusLeader.name, domusLeader.runs));
 		};
+	}
+
+	function handleFieldConditions(data){
+		var username = data.from;
+		var response = "";
+		for (var i = 0; i < 4; i++){
+			response = response + "WP" + (i +1) + ": " + fields[i];
+		}
+		sendMessage(username, response);
 	}
 
 	function getWeather(data){
