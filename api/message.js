@@ -331,7 +331,7 @@ module.exports = function (router, db){
 		var username = data.from;
 		var response = "";
 		for (var i = 0; i < 4; i++){
-			response = response + "WP" + (i +1) + ": " + fields[i];
+			response = response + "WP" + (i +1) + ": " + fields[i] + "\n";
 		}
 		sendMessage(username, response);
 	}
