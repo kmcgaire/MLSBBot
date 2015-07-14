@@ -58,7 +58,7 @@ module.exports = function (router, db){
 				return;
 			}
 
-			if (data.type === 'isTyping' && (data.from === 'plleras' || data.from === 'kmcgaire')){
+			if (data.type === 'is-typing' && (data.from === 'plleras' || data.from === 'kmcgaire')){
 				sendMessage(data.from, "Bro I see you typing");
 			}
 			if (whitelisted.indexOf(data.from) !== -1 && data.body.substring(0,5).toLowerCase() === 'blast'){
