@@ -56,13 +56,13 @@ module.exports = function (router, db){
 
 			var lock = false;
 
-			if (data.type === 'is-typing' && (data.from === 'plleras' || data.from === 'kmcgaire')){
+			if (data.type === 'is-typing' && data.from === 'robinsharms'){
 				if (!lock){
 					sendMessage(data.from, "Bro I see you typing");
 					lock = true;
 					setTimeout(function(){
 						lock = false;
-					}, 2000)
+					}, 2000);
 				}
 			}
 
